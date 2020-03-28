@@ -7,12 +7,7 @@ def create_api() -> FastAPI:
 
     # TODO inject config here
     api.include_router(
-        contacts.router,
-        prefix="/v1/contacts",
-    )
-
-    api.include_router(
-        prefix="/v1/"
+        contacts.router, prefix="/v1",
     )
 
     return api

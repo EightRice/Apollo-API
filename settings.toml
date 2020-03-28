@@ -1,0 +1,6 @@
+[default]
+server_port = 5000
+server_host = "localhost"
+log_level = "debug"
+worker_threads = 4
+env = "development"

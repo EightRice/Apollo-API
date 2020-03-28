@@ -2,12 +2,11 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-
-@router.get("/")
+@router.get("/contacts")
 async def get_contacts():
-    pass
+    return {"hello": "world"}
 
 
-@router.post("/")
+@router.post("/contacts")
 async def post_contacts():
-    pass
+    return {"hello": "world"}
