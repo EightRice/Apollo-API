@@ -5,19 +5,18 @@ from config.db import connection
 
 router = APIRouter()
 
-
 class Interaction(BaseModel):
+    id: int
     location: Dict
     networks: Dict
 
 
 @router.get("/interactions")
 async def get_contacts():
-    return {"data": {"message": "interactions"}, "error": None}
+    return {"data": connection, "error": None}
 
 
 @router.post("/interactions")
 async def post_contacts(interactions: Interaction):
-    # connection.insert_many()
-    print(interactions)
+    connection.append(interactions)
     return {"data": {"message": "Interactions stored successfully"}, "error": None}
