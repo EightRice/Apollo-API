@@ -4,3 +4,6 @@ server_host = "0.0.0.0"
 log_level = "debug"
 worker_threads = 4
 env = "development"
+db_host = "0.0.0.0"
+db_port = 27017
+db_name = "interactions_db"
