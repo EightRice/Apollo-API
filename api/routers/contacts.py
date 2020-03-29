@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 from fastapi import APIRouter
 from pydantic import BaseModel
 from config.db import connection
@@ -8,7 +8,7 @@ router = APIRouter()
 class Interaction(BaseModel):
     id: int
     location: Dict
-    networks: Dict
+    networks: List
 
 
 @router.get("/interactions")
