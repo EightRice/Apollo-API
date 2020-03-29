@@ -10,4 +10,6 @@ RUN pip install --ignore-installed -r requeriments.txt
 
 COPY . .
 
-CMD ["python", "main.py"]
+EXPOSE 5000
+
+ENTRYPOINT ["python", "main.py"]
