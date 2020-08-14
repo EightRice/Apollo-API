@@ -19,4 +19,4 @@ async def get_contacts():
 @router.post("/interactions")
 async def post_contacts(interactions: Interaction):
     connection.append(interactions)
-    return {"data": {"message": "Interactions stored successfully"}, "error": None}
+    return {"data": {"message": "ultima data era asa"}, "error": None}
