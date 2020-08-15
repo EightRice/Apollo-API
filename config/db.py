@@ -11,4 +11,6 @@ Contains an instance of the database
 #
 #connection = client[settings.get("db_name")]
 
-connection = []
+positions = []
+
+users=[]
