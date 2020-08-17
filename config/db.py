@@ -13,4 +13,8 @@ Contains an instance of the database
 
 positions = []
 
-users=[]
+users = []
+
+ongoing_interactions = []
+
+interactions = []
