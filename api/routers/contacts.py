@@ -42,39 +42,54 @@ def deal_with_it(position):
     loc = Loc(position.location['latitude'],
               position.location['longitude'], position.location['time'], position.id)
     found = False
+    u = None
     for user in users:
         if position.id == user.uid:
             found = True
             user.last_location = loc
-            return "Old user " + str(detect_proximity(loc))
+            u = user
+            proximity = detect_proximity(u)
+            if proximity[0] == True:
+                uids = []
+                for user in proximity[1]:
+                    uids.append(user.uid)
+                    detect_interaction(u, user)
+                for toople in u.ongoing_interactions:
+                    if toople[0] not in uids:
+                        print("suntem aproape sa stergem interactiunea")
+                        ongoing_interactions[toople[1]].end()
+            else:
+                print("suntem pe else in found user")
+                for toople in u.ongoing_interactions:
+                    print(toople)
+                    ongoing_interactions[toople[1]].end()
     if not found:
-        users.append(User(uid=position.id, last_location=loc))
-        return "new user " + str(detect_proximity(loc))
+        u = User(uid=position.id, last_location=loc)
+        users.append(u)
+        proximity = detect_proximity(u)
+        if proximity[0] == True:
+            for user in proximity[1]:
+                detect_interaction(u, user)
 
 
-def detect_proximity(loc):
-    proximities = 0
-    old_interactions = 0
+def detect_proximity(u):
+    proximities = []
     for user in users:
-        if user.uid == loc.uid:
+        if user.uid == u.uid:
             continue
-        if distance.distance(loc.toople(), user.last_location.toople()).m < 5.0:
-            proximities += 1
-            detected = detect_interaction(loc.uid, user.uid, loc.time)
-            if detected[1] == 1:
-                user.ongoing_interactions.append(detected[0])
-
-    return "Proximities: ", proximities, " ongoing interactions: ", old_interactions, " new interactions: ", proximities-old_interactions
+        if distance.distance(u.last_location.toople(), user.last_location.toople()).m < 5.0:
+            proximities.append(user)
+    if len(proximities) > 0:
+        return True, proximities
+    return False, False
 
 
-def detect_interaction(uid1, uid2, time):
+def detect_interaction(user1, user2):
     for i in ongoing_interactions:
-        if collections.Counter(i.uids) == collections.Counter([uid1, uid2]):
-            i.updates[uid1] = time
-            return i, 0
-    i = Interaction(uid1, uid2, time)
-    ongoing_interactions.append(Interaction(uid1, uid2, time))
-    return i, 1
+        if collections.Counter(i.uids) == collections.Counter([user1.uid, user2.uid]):
+            i.updates[str(user1.uid)] = user1.last_location.time
+            return
+    i = Interaction(user1, user2)
 
 
 @ router.get("/users")
@@ -96,8 +111,8 @@ async def get_interactions():
 async def post_contacts(pos: Position):
     print("Position from ", pos.id, ", at time (ms): ",
           pos.location['time'], ":", pos.location['longitude'], " ", pos.location['latitude'])
-    aloneOrNot = deal_with_it(pos)
-    return {"data": {"message": aloneOrNot}, "error": None}
+    deal_with_it(pos)
+    return {"data": {"message": "position registered"}, "error": None}
 
 
 @ router.post("/start099441271933")

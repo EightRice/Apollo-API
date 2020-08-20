@@ -4,27 +4,31 @@ from config.db import interactions
 
 
 class Interaction:
-    def __init__(self, uid1, uid2, time):
+    def __init__(self, user1, user2):
+        self.id = len(interactions)
+        interactions.append(self)
+        ongoing_interactions.append(self)
+        user1.ongoing_interactions.append((user2.uid, self.id))
+        user2.ongoing_interactions.append((user1.uid, self.id))
         self.ongoing = True
-        self.uids = [uid1, uid2]
-        self.start_time = time
+        self.uids = [user1.uid, user2.uid]
+        self.start_time = user1.last_location.time
         self.end_time = 0
         self.outdoor = True
         self.distance = 1
         self.updates = {}
-        self.humans = []
+        self.user1 = user1
+        self.user2 = user2
 
     def end(self):
+        print("se sterge")
         self.ongoing = False
-        for i in ongoing_interactions:
-            if i == self:
-                interactions.append(self)
-                ongoing_interactions.remove(self)
-        for user in self.humans:
-            user.ongoing_interactions.remove(self)
-            user.interactions.append(self)
-        print("Interaction between ", self.humans[0], " and ",
-              self.humans[1], " has ended, but they will remain friends.")
+        self.user1.ongoing_interactions.remove((self.user2.uid, self.id))
+        self.user2.ongoing_interactions.remove((self.user1.uid, self.id))
+        self.user1.past_interactions.append((self.user2.uid, self.id))
+        self.user2.past_interactions.append((self.user1.uid, self.id))
+        ongoing_interactions.remove(self)
+
         # def get_risks(self, uid1, uid2):
         #     for user in users:
         #         if user.uid == uid1 or user.uid == uid2:
