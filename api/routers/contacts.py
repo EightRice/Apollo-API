@@ -59,10 +59,10 @@ def deal_with_it(position):
                         print("suntem aproape sa stergem interactiunea")
                         ongoing_interactions[toople[1]].end()
             else:
-                print("suntem pe else in found user")
-                for toople in u.ongoing_interactions:
-                    print(toople)
-                    ongoing_interactions[toople[1]].end()
+                print("found user with no proximity")
+                for i in ongoing_interactions:
+                    if u.uid in i.uids:
+                        i.end()
     if not found:
         u = User(uid=position.id, last_location=loc)
         users.append(u)
