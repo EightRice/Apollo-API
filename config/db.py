@@ -15,6 +15,8 @@ positions = []
 
 users = []
 
+uids = []
+
 ongoing_interactions = []
 
 interactions = []

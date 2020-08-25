@@ -5,6 +5,7 @@ class User:
         self.last_location = last_location
         self.ongoing_interactions = []
         self.past_interactions = []
+        self.ongoing_uids = []
 
     def to_dict(self):
         return {

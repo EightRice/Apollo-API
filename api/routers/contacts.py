@@ -5,6 +5,7 @@ from config.db import positions
 from config.db import users
 from config.db import interactions
 from config.db import ongoing_interactions
+from config.db import uids
 from geopy.distance import geodesic
 from multiprocessing import Process
 from geopy import distance
@@ -46,6 +47,7 @@ def deal_with_it(position):
     for user in users:
         if position.id == user.uid:
             found = True
+            print("L-am gasit")
             user.last_location = loc
             u = user
             proximity = detect_proximity(u)
@@ -56,28 +58,29 @@ def deal_with_it(position):
                     detect_interaction(u, user)
                 for toople in u.ongoing_interactions:
                     if toople[0] not in uids:
-                        print("suntem aproape sa stergem interactiunea")
-                        ongoing_interactions[toople[1]].end()
+                        interactions[toople[1]].end()
             else:
                 print("found user with no proximity")
                 for i in ongoing_interactions:
                     if u.uid in i.uids:
                         i.end()
     if not found:
+        print("Not found")
         u = User(uid=position.id, last_location=loc)
         users.append(u)
         proximity = detect_proximity(u)
         if proximity[0] == True:
             for user in proximity[1]:
                 detect_interaction(u, user)
+    return u
 
 
 def detect_proximity(u):
     proximities = []
     for user in users:
-        if user.uid == u.uid:
+        if user.uid == u.uid or user.last_location == None:
             continue
-        if distance.distance(u.last_location.toople(), user.last_location.toople()).m < 5.0:
+        if distance.distance(u.last_location.toople(), user.last_location.toople()).m < 3.0:
             proximities.append(user)
     if len(proximities) > 0:
         return True, proximities
@@ -111,8 +114,7 @@ async def get_interactions():
 async def post_contacts(pos: Position):
     print("Position from ", pos.id, ", at time (ms): ",
           pos.location['time'], ":", pos.location['longitude'], " ", pos.location['latitude'])
-    deal_with_it(pos)
-    return {"data": {"message": "position registered"}, "error": None}
+    return {"data": deal_with_it(pos), "error": None}
 
 
 @ router.post("/start099441271933")

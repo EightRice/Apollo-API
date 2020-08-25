@@ -2,7 +2,6 @@ from config.db import users
 from config.db import ongoing_interactions
 from config.db import interactions
 
-
 class Interaction:
     def __init__(self, user1, user2):
         self.id = len(interactions)
@@ -19,7 +18,7 @@ class Interaction:
         self.updates = {}
         self.user1 = user1
         self.user2 = user2
-
+    
     def end(self):
         print("se sterge")
         self.ongoing = False
